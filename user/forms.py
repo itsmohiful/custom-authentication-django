@@ -3,6 +3,7 @@ from socket import fromshare
 from django import django, forms, from, import
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
 
 from .models import User
@@ -26,3 +27,18 @@ class UserCreationForm(forms.ModelForm):
             raise ValidationError("Passwords don't match")
 
         return password2
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data['password1'])
+        if commit:
+            user.save()
+        return user
+
+
+class UserUpdateForm(forms.ModelForm):
+    password = ReadOnlyPasswordHashField()
+
+    class Meta:
+        model = User
+        fields = ('email', 'password', 'is_active', 'is_admin')
