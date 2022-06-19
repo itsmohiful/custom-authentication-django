@@ -5,25 +5,25 @@ from django.utils import timezone
 
 class UserManager(BaseUserManager):
 
-    def create_user(self, email, password=None):
+    def create_user(self, email, username, password=None):
         """
             create and saves user with the given email and password
         """
         if not email:
             raise ValueError('Users must have an email address')
         
-        user = self.model(email=self.normalize_email(email))
+        user = self.model(email=self.normalize_email(email), username=username)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
 
     
-    def create_superuser(self, email, password=None):
+    def create_superuser(self, email, username, password=None):
         """
             create and saves a superuser iwth given email and password
         """
-        user = self.create_user(email, password=password)
+        user = self.create_user(email, username=username, password=password)
         user.is_admin = True
         user.save(using=self._db)
         return user
@@ -57,3 +57,10 @@ class User(AbstractBaseUser):
         "Does the user have permissions to view the app `app_lebel` "
         #simplest possible answer: yes always
         return True
+
+
+    @property
+    def is_staff(self):
+        "Is the user a member of staff?"
+        # Simplest possible answer: All admins are staff
+        return self.is_admin

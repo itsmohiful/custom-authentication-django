@@ -1,6 +1,4 @@
-from socket import fromshare
-
-from django import django, forms, from, import
+from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
@@ -16,7 +14,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email')
+        fields = ('email','username',)
 
 
     def clean_password2(self):
@@ -41,4 +39,4 @@ class UserUpdateForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'password', 'is_active', 'is_admin')
+        fields = ('email', 'username', 'password', 'is_active', 'is_admin',)
